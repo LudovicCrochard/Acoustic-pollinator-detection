@@ -2,7 +2,8 @@ library(data.table)
 library(tidyverse)
 library(ROCR)
 
-#Test classificateur deep learning 1
+
+################♦#Test classificateur deep learning 1 batch size=4
 pred_deep <- fread("D:/Deep_learning_manip_tournesol_2020/TadariDeep-main/python_sources/txt/predictions_1_10_1_basetest.csv")
 pred_deep$score_pol <- pred_deep$Apismel+pred_deep$Bomsp+pred_deep$insect
 
@@ -43,7 +44,7 @@ perf1@y.values[[1]]
 
 
 #Test classificateur deep learning 2
-pred_deep <- fread("D:/Deep_learning_manip_tournesol_2020/TadariDeep-main/python_sources/txt/predictions_2_10_1_basetest.csv")
+pred_deep <- fread("D:/Deep_learning_manip_tournesol_2020/TadariDeep-main/python_sources/txt/predictions_1_25_1_basetest.csv")
 pred_deep$score_pol <- pred_deep$Apismel+pred_deep$Bomsp+pred_deep$insect
 
 pred_deep <- pred_deep %>% 
@@ -85,7 +86,7 @@ perf1@y.values[[1]]
 
 
 #Test classificateur deep learning 3
-pred_deep <- fread("D:/Deep_learning_manip_tournesol_2020/TadariDeep-main/python_sources/txt/predictions_3_30_1_basetest.csv")
+pred_deep <- fread("D:/Deep_learning_manip_tournesol_2020/TadariDeep-main/python_sources/txt/predictions_1_50_1_basetest.csv")
 pred_deep$score_pol <- pred_deep$Apismel+pred_deep$Bomsp+pred_deep$insect
 
 pred_deep <- pred_deep %>% 
@@ -127,7 +128,7 @@ perf1@y.values[[1]]
 
 
 #Test classificateur deep learning 4
-pred_deep <- fread("D:/Deep_learning_manip_tournesol_2020/TadariDeep-main/python_sources/txt/predictions_4_60_1_basetest.csv")
+pred_deep <- fread("D:/Deep_learning_manip_tournesol_2020/TadariDeep-main/python_sources/txt/predictions_1_75_1_basetest.csv")
 pred_deep$score_pol <- pred_deep$Apismel+pred_deep$Bomsp+pred_deep$insect
 
 pred_deep <- pred_deep %>% 
@@ -162,6 +163,258 @@ plot(perf)+
   abline(v=0.05, col="orange")
 perf1 <- performance(pred, "auc")
 perf1@y.values[[1]]
+
+
+
+#Test classificateur deep learning 4
+pred_deep <- fread("D:/Deep_learning_manip_tournesol_2020/TadariDeep-main/python_sources/txt/predictions_1_100_1_basetest.csv")
+pred_deep$score_pol <- pred_deep$Apismel+pred_deep$Bomsp+pred_deep$insect
+
+pred_deep <- pred_deep %>% 
+  group_by(`fichier wav`)
+
+t <- as.data.frame(table(pred_deep$score_pol, pred_deep$`fichier wav`))
+t <- filter(t, Freq!=0)
+t1 <- filter(t, Var1==0)
+pred_deep <- pred_deep %>% 
+  group_by(`fichier wav`) %>%
+  filter(score_pol == max(score_pol))
+
+identif_test <- fread("D:/dossiers_issus_du_disque_7/identif_ech_test_avec_database_avant_ajout_voix_humaine.csv")
+identif_test <- rename(identif_test,`fichier wav`=Group.1)
+identif_test$`fichier wav` <- str_replace(identif_test$`fichier wav`, ".wav", "")
+identif <- left_join(pred_deep, identif_test[, c(2,37,38)], by="fichier wav")
+
+
+
+####Jeu de donnÃ©es Ã©tiquetÃ©
+identif$Pol_or_not <- fct_recode(identif$Pol_or_not,
+                                 "1" = "yes",
+                                 "0" = "no")
+identif <- identif[order(-score_pol),] 
+identif <- unique(identif[,c(4,30:32)])
+pred <- prediction(identif$score_pol, identif$Pol_or_not)                          
+
+perf <- performance(pred, "tpr", "fpr")
+plot(perf)+
+  abline(v=0.2, col="red")+
+  abline(v=0.1, col="blue")+
+  abline(v=0.05, col="orange")
+perf1 <- performance(pred, "auc")
+perf1@y.values[[1]]
+
+
+
+
+
+
+
+################♦#Test classificateur deep learning 2 batch size=8
+pred_deep <- fread("D:/Deep_learning_manip_tournesol_2020/TadariDeep-main/python_sources/txt/predictions_2_10_1_basetest.csv")
+pred_deep$score_pol <- pred_deep$Apismel+pred_deep$Bomsp+pred_deep$insect
+
+pred_deep <- pred_deep %>% 
+  group_by(`fichier wav`)
+
+t <- as.data.frame(table(pred_deep$score_pol, pred_deep$`fichier wav`))
+t <- filter(t, Freq!=0)
+t1 <- filter(t, Var1==0)
+pred_deep <- pred_deep %>% 
+  group_by(`fichier wav`) %>%
+  filter(score_pol == max(score_pol))
+
+identif_test <- fread("D:/dossiers_issus_du_disque_7/identif_ech_test_avec_database_avant_ajout_voix_humaine.csv")
+library(dplyr)
+identif_test <- rename(identif_test,`fichier wav`=Group.1)
+identif_test$`fichier wav` <- str_replace(identif_test$`fichier wav`, ".wav", "")
+identif <- left_join(pred_deep, identif_test[, c(2,37,38)], by="fichier wav")
+
+
+
+####Jeu de donnÃ©es Ã©tiquetÃ©
+identif$Pol_or_not <- fct_recode(identif$Pol_or_not,
+                                 "1" = "yes",
+                                 "0" = "no")
+identif <- identif[order(-score_pol),]
+identif <- unique(identif[,c(4,30:32)])
+pred <- prediction(identif$score_pol, identif$Pol_or_not)                          
+
+perf <- performance(pred, "tpr", "fpr")
+plot(perf)+
+  abline(v=0.2, col="red")+
+  abline(v=0.1, col="blue")+
+  abline(v=0.05, col="orange")
+perf1 <- performance(pred, "auc")
+perf1@y.values[[1]]
+
+
+
+#Test classificateur deep learning 2
+pred_deep <- fread("D:/Deep_learning_manip_tournesol_2020/TadariDeep-main/python_sources/txt/predictions_2_25_1_basetest.csv")
+pred_deep$score_pol <- pred_deep$Apismel+pred_deep$Bomsp+pred_deep$insect
+
+pred_deep <- pred_deep %>% 
+  group_by(`fichier wav`)
+
+t <- as.data.frame(table(pred_deep$score_pol, pred_deep$`fichier wav`))
+t <- filter(t, Freq!=0)
+t1 <- filter(t, Var1==0)
+pred_deep <- pred_deep %>% 
+  group_by(`fichier wav`) %>%
+  filter(score_pol == max(score_pol))
+
+identif_test <- fread("D:/dossiers_issus_du_disque_7/identif_ech_test_avec_database_avant_ajout_voix_humaine.csv")
+identif_test <- rename(identif_test,`fichier wav`=Group.1)
+identif_test$`fichier wav` <- str_replace(identif_test$`fichier wav`, ".wav", "")
+identif <- left_join(pred_deep, identif_test[, c(2,37,38)], by="fichier wav")
+
+
+
+####Jeu de donnÃ©es Ã©tiquetÃ©
+identif$Pol_or_not <- fct_recode(identif$Pol_or_not,
+                                 "1" = "yes",
+                                 "0" = "no")
+identif <- identif[order(-score_pol),]  
+identif <- unique(identif[,c(4,30:32)])
+pred <- prediction(identif$score_pol, identif$Pol_or_not)                          
+
+perf <- performance(pred, "tpr", "fpr")
+plot(perf)+
+  abline(v=0.2, col="red")+
+  abline(v=0.1, col="blue")+
+  abline(v=0.05, col="orange")
+perf1 <- performance(pred, "auc")
+perf1@y.values[[1]]
+
+
+
+
+
+
+#Test classificateur deep learning 3
+pred_deep <- fread("D:/Deep_learning_manip_tournesol_2020/TadariDeep-main/python_sources/txt/predictions_2_50_1_basetest.csv")
+pred_deep$score_pol <- pred_deep$Apismel+pred_deep$Bomsp+pred_deep$insect
+
+pred_deep <- pred_deep %>% 
+  group_by(`fichier wav`)
+
+t <- as.data.frame(table(pred_deep$score_pol, pred_deep$`fichier wav`))
+t <- filter(t, Freq!=0)
+t1 <- filter(t, Var1==0)
+pred_deep <- pred_deep %>% 
+  group_by(`fichier wav`) %>%
+  filter(score_pol == max(score_pol))
+
+identif_test <- fread("D:/dossiers_issus_du_disque_7/identif_ech_test_avec_database_avant_ajout_voix_humaine.csv")
+identif_test <- rename(identif_test,`fichier wav`=Group.1)
+identif_test$`fichier wav` <- str_replace(identif_test$`fichier wav`, ".wav", "")
+identif <- left_join(pred_deep, identif_test[, c(2,37,38)], by="fichier wav")
+
+
+
+####Jeu de donnÃ©es Ã©tiquetÃ©
+identif$Pol_or_not <- fct_recode(identif$Pol_or_not,
+                                 "1" = "yes",
+                                 "0" = "no")
+identif <- identif[order(-score_pol),] 
+identif <- unique(identif[,c(4,30:32)])
+pred <- prediction(identif$score_pol, identif$Pol_or_not)                          
+
+perf <- performance(pred, "tpr", "fpr")
+plot(perf)+
+  abline(v=0.2, col="red")+
+  abline(v=0.1, col="blue")+
+  abline(v=0.05, col="orange")
+perf1 <- performance(pred, "auc")
+perf1@y.values[[1]]
+
+
+
+
+
+
+#Test classificateur deep learning 4
+pred_deep <- fread("D:/Deep_learning_manip_tournesol_2020/TadariDeep-main/python_sources/txt/predictions_2_75_1_basetest.csv")
+pred_deep$score_pol <- pred_deep$Apismel+pred_deep$Bomsp+pred_deep$insect
+
+pred_deep <- pred_deep %>% 
+  group_by(`fichier wav`)
+
+t <- as.data.frame(table(pred_deep$score_pol, pred_deep$`fichier wav`))
+t <- filter(t, Freq!=0)
+t1 <- filter(t, Var1==0)
+pred_deep <- pred_deep %>% 
+  group_by(`fichier wav`) %>%
+  filter(score_pol == max(score_pol))
+
+identif_test <- fread("D:/dossiers_issus_du_disque_7/identif_ech_test_avec_database_avant_ajout_voix_humaine.csv")
+identif_test <- rename(identif_test,`fichier wav`=Group.1)
+identif_test$`fichier wav` <- str_replace(identif_test$`fichier wav`, ".wav", "")
+identif <- left_join(pred_deep, identif_test[, c(2,37,38)], by="fichier wav")
+
+
+
+####Jeu de donnÃ©es Ã©tiquetÃ©
+identif$Pol_or_not <- fct_recode(identif$Pol_or_not,
+                                 "1" = "yes",
+                                 "0" = "no")
+identif <- identif[order(-score_pol),] 
+identif <- unique(identif[,c(4,30:32)])
+pred <- prediction(identif$score_pol, identif$Pol_or_not)                          
+
+perf <- performance(pred, "tpr", "fpr")
+plot(perf)+
+  abline(v=0.2, col="red")+
+  abline(v=0.1, col="blue")+
+  abline(v=0.05, col="orange")
+perf1 <- performance(pred, "auc")
+perf1@y.values[[1]]
+
+
+
+#Test classificateur deep learning 4
+pred_deep <- fread("D:/Deep_learning_manip_tournesol_2020/TadariDeep-main/python_sources/txt/predictions_2_100_1_basetest.csv")
+pred_deep$score_pol <- pred_deep$Apismel+pred_deep$Bomsp+pred_deep$insect
+
+pred_deep <- pred_deep %>% 
+  group_by(`fichier wav`)
+
+t <- as.data.frame(table(pred_deep$score_pol, pred_deep$`fichier wav`))
+t <- filter(t, Freq!=0)
+t1 <- filter(t, Var1==0)
+pred_deep <- pred_deep %>% 
+  group_by(`fichier wav`) %>%
+  filter(score_pol == max(score_pol))
+
+identif_test <- fread("D:/dossiers_issus_du_disque_7/identif_ech_test_avec_database_avant_ajout_voix_humaine.csv")
+identif_test <- rename(identif_test,`fichier wav`=Group.1)
+identif_test$`fichier wav` <- str_replace(identif_test$`fichier wav`, ".wav", "")
+identif <- left_join(pred_deep, identif_test[, c(2,37,38)], by="fichier wav")
+
+
+
+####Jeu de donnÃ©es Ã©tiquetÃ©
+identif$Pol_or_not <- fct_recode(identif$Pol_or_not,
+                                 "1" = "yes",
+                                 "0" = "no")
+identif <- identif[order(-score_pol),] 
+identif <- unique(identif[,c(4,30:32)])
+pred <- prediction(identif$score_pol, identif$Pol_or_not)                          
+
+perf <- performance(pred, "tpr", "fpr")
+plot(perf)+
+  abline(v=0.2, col="red")+
+  abline(v=0.1, col="blue")+
+  abline(v=0.05, col="orange")
+perf1 <- performance(pred, "auc")
+perf1@y.values[[1]]
+
+
+
+
+
+
+
 
 
 
