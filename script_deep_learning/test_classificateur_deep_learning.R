@@ -209,7 +209,7 @@ perf1@y.values[[1]]
 
 
 
-################♦#Test classificateur deep learning 2 batch size=8
+#################Test classificateur deep learning 2 batch size=8
 pred_deep <- fread("D:/Deep_learning_manip_tournesol_2020/TadariDeep-main/python_sources/txt/predictions_2_10_1_basetest.csv")
 pred_deep$score_pol <- pred_deep$Apismel+pred_deep$Bomsp+pred_deep$insect
 
