@@ -15,4 +15,4 @@ table(BaseInit$Nesp)
 
 #Test
 
-fwrite(BaseAugmentee,"BaseAugmentee.csv",sep=";")
+# fwrite(BaseAugmentee,"BaseAugmentee.csv",sep=";")
