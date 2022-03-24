@@ -27,8 +27,8 @@ identif <- rename(identif,fichier_wav=`fichier wav`)
 
 ####Jeu de donnÃ©es Ã©tiquetÃ©
 identif$Pol_or_not <- fct_recode(identif$Pol_or_not,
-                           "1" = "yes",
-                           "0" = "no")
+                                 "1" = "yes",
+                                 "0" = "no")
 identif <- identif[order(-score_pol),]
 identif <- unique(identif[,c(4,30:32)])
 pred <- prediction(identif$score_pol, identif$Pol_or_not)                          
@@ -56,17 +56,17 @@ identif1 <- filter(identif1, identif1$fichier_wav!="parcelle_17019_l3t1_20200819
 identif1 <- filter(identif1, identif1$fichier_wav!="parcelle_5572_l3t2_20200804_090055_000-x10")
 
 identif1 <- rbind(identif1, identif2) 
-  # identif1 <- filter(identif1, identif1$fichier_wav!="parcelle_17019_l3t1_20200729_090710_000-x10")
+# identif1 <- filter(identif1, identif1$fichier_wav!="parcelle_17019_l3t1_20200729_090710_000-x10")
 pred <- prediction(identif1$score_pol, identif1$Pol_or_not)                          
 
 perf <- performance(pred, "tpr", "fpr")
 plot(perf)
-  # abline(v=0.2, col="red")+
-  # abline(v=0.1, col="blue")+
-  # abline(v=0.05, col="orange")+
-  # abline(h = 0.935, col="red")+
-  # abline(h=0.855, col="blue")+
-  # abline(h=0.74, col="orange")
+# abline(v=0.2, col="red")+
+# abline(v=0.1, col="blue")+
+# abline(v=0.05, col="orange")+
+# abline(h = 0.935, col="red")+
+# abline(h=0.855, col="blue")+
+# abline(h=0.74, col="orange")
 perf1 <- performance(pred, "auc")
 perf1@y.values[[1]]
 
