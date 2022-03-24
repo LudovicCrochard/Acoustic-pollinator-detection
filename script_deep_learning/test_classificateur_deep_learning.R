@@ -3,7 +3,7 @@ library(tidyverse)
 library(ROCR)
 
 
-#################Test classificateur deep learning 
+#################Test classificateur deep learning
 pred_deep <- fread("H:/traitement_Tadarida_deep_avec_freq20/TadariDeep-main/python_sources/txt/predictions_1_200_1_basetest.csv")
 pred_deep$score_pol <- pred_deep$Apismel+pred_deep$Bomsp+pred_deep$insect
 
