@@ -37,7 +37,7 @@ for(i in 1:nrow(df376)){
 
 df376_pol <- filter(df376, pol_class>=5)
 
-df376_pol <- separate(data = df376_pol, col = Group.1, sep = "_",, into = c("Field", "Parcelle", "Pied", "Date", "Heure", "ext"))
+df376_pol <- separate(data = df376_pol, col = Group.1, sep = "_", into = c("Field", "Parcelle", "Pied", "Date", "Heure", "ext"))
 
 df376_pol$Date <- as.Date(df376_pol$Date, format = "%Y%m%d")
 df376_pol$Nb_buzz <- 1
@@ -115,23 +115,37 @@ t <- aggregate(Nb_buzz~Stade_pied,data = df_floraison_pied, FUN="mean")
 ggplot(data=df_floraison_pied, aes(x = Stade_pied, y=Nb_buzz))+
   geom_boxplot(outlier.shape = NA)+
   stat_summary(fun.y=mean, geom="point", size=3, col="blue")+
-  geom_point(shape=16, position=position_jitter(0.2))
+  geom_point(shape=16, position=position_jitter(0.2))+xlab("Stade de floraison du pied")+ylab("Nombre de buzz")+ggtitle("Nombre de buzz par jour en fonction du stade de floraison du pied")
+
+
+test <- df376_pol
+test$Surface_capituale <- pi*(test$Diametre_capitule/2)^2
+test$diametre_non_recouvert_par_fleurons <- test$Diametre_capitule-(test$Largeur_fleur_femelle*2+test$`Largeur-fleur_male`*2)
+test$surface_non_recouverte_par_fleurons <- pi*(test$diametre_non_recouvert_par_fleurons/2)^2
+test$Pourcentage_couverture_fleurons <- ((test$Surface_capituale-test$surface_non_recouverte_par_fleurons)/test$Surface_capituale)*100
+
 
 #Nb_buzz par jour de la saison
 nb_per_day <- aggregate(Nb_buzz~jour, data=df376_pol, FUN="sum")
 ggplot(data = nb_per_day, aes(x=jour, y=Nb_buzz))+
   geom_bar(stat="identity")+
   geom_vline(xintercept = 208.5)+
-  geom_vline(xintercept=222.5)
+  geom_vline(xintercept=222.5)+xlab("Date (j)")+ylab("Nombre de buzz")+ggtitle("Nombre de buzz par jour au cours de la saison")
 
 #Nombre buzz en fonction du pourcentage de floraison de la parcelle
 df376_pol$Pourcentage_floraison <- as.character(df376_pol$Pourcentage_floraison)
 df_floraison_parcelle <- aggregate(Nb_buzz~Pourcentage_floraison+jour, data=df376_pol, FUN="sum")
+df_floraison_parcelle$Pourcentage_floraison <- as.factor(df_floraison_parcelle$Pourcentage_floraison)
+df_floraison_parcelle$Pourcentage_floraison <- fct_relevel(
+  df_floraison_parcelle$Pourcentage_floraison,
+  "1", "5", "20",
+  "100")
 
 ggplot(data=df_floraison_parcelle, aes(x = Pourcentage_floraison, y=Nb_buzz))+
   geom_boxplot(outlier.shape = NA)+
   stat_summary(fun.y=mean, geom="point", size=3, col="blue")+
-  geom_point(shape=16, position=position_jitter(0.2))
+  geom_point(shape=16, position=position_jitter(0.2))+
+  xlab("Pourcentage de floraison de la parcelle")+ylab("Nombre de buzz")+ggtitle("Nombre de buzz par jour en fonction du pourcentage de floraison de la parcelle")
 
 #Nombre de buzz moyen par heure sur la saison
 ##Connaitre nombre de fois oùil y a eu des enreigstrements pendant la journée
@@ -176,9 +190,15 @@ test <- left_join(test, nb_heure_par_nb_jour, by="num_Heure")
 test$moyenne <- test$Nb_buzz/test$Frequence
 names(test) <- c("num_Heure", "nbtot_buzz", "Frequence_heure", "Nb_buzz")
 test1 <- aggregate(Nb_buzz~num_Heure+jour, data=df376_pol, FUN="sum")
+test1$num_Heure <- fct_relevel(
+  test1$num_Heure,
+  "6", "7","8","9","10","11","12","13","14","15","16","17","18","19", "20","21")
+
 
 ggplot(data = test1, aes(x=num_Heure, y=Nb_buzz))+
   geom_boxplot(outlier.shape = NA)+
   geom_point()+
-  geom_point(data=test,aes(x = num_Heure, y=Nb_buzz), col="red")
+  geom_point(data=test,aes(x = num_Heure, y=Nb_buzz), col="red")+
+  xlab("Heure")+ylab("Nombre de buzz")+ggtitle("Nombre de buzz moyen par heure au cours de la saison")
+
   
