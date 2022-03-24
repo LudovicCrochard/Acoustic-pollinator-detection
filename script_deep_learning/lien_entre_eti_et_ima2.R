@@ -1,11 +1,11 @@
 library(data.table)
 library(Hmisc)
 library(tidyverse)
-rf_ta_files <- as.data.frame(list.files(path = "D:/RSDB", pattern =".ta" , recursive =TRUE))
-rf_eti_files <- as.data.frame(list.files(path = "D:/RSDB", pattern =".eti" , recursive =TRUE))
-rf_files_path <- "D:/RSDB" #RSDB utilisee pour le random forest
-deep_files <- as.data.frame(list.files(path = "D:/RSDB_test", pattern =".ta" , recursive =TRUE))
-deep_files_path <- "D:/RSDB_test" #RSDB utilisee pour le deep learning
+rf_ta_files <- as.data.frame(list.files(path = "H:/RSDB", pattern =".ta" , recursive =TRUE))
+rf_eti_files <- as.data.frame(list.files(path = "H:/RSDB", pattern =".eti" , recursive =TRUE))
+rf_files_path <- "H:/RSDB" #RSDB utilisee pour le random forest
+deep_files <- as.data.frame(list.files(path = "H:/traitement_Tadarida_deep_avec_freq20/RSDB_test", pattern =".ta" , recursive =TRUE))
+deep_files_path <- "H:/traitement_Tadarida_deep_avec_freq20/RSDB_test" #RSDB utilisee pour le deep learning
 
 names_eti <- c("Cri", "Espece", "Type", "Indice", "Zone", "Site", "Commentaire", "Materiel", "Confidentiel", "Date", "Auteur", "Etiqueteur")
 ToleranceFreq=0.2
@@ -54,12 +54,12 @@ NewLabelTable1$Filename <- str_replace(NewLabelTable1$Filename, ".wav", "")
 
 
 #Recherche des fichiers images et renommage des fichiers en fonction de l'espece correspondant a l'evenement sonore
-images <- as.data.frame(list.files(path = "D:/RSDB_test", full.names = TRUE, recursive = TRUE))
+images <- as.data.frame(list.files(path = "H:/traitement_Tadarida_deep_avec_freq20/RSDB_test", full.names = TRUE, recursive = TRUE))
 names(images) <- c("Filename")
 library(stringr)
 images1 <- subset(images, str_detect(images$Filename, pattern = "ima2"))
 
-images2 <- separate(images1, col = Filename, into = c("Disque", "RSDB", "date", "type", "fichier"), sep = "/")
+images2 <- separate(images1, col = Filename, into = c("Disque", "Dossier","RSDB", "date", "type", "fichier"), sep = "/")
 images2 <- separate(data = images2, col = fichier, sep = "--", into = c("Filename", "CallNum", "Intensity", "Duree", "Frequency", "STTime"))
 images2$CallNum <- as.integer(images2$CallNum)
 
@@ -73,8 +73,8 @@ image4$past_name <- paste(images3$Filename, images3$CallNum, images3$Intensity, 
 names(image4) <- c("new_name", "past_name")
 
 images3$past_name <- paste(images3$Filename, images3$CallNum, images3$Intensity, images3$Duree, images3$Frequency, images3$STTime, sep="--")
-images3$path <- paste(images3$Disque, images3$RSDB, images3$date, images3$type, sep="/")
-image4 <- merge(image4, images3[,c(12,13)], by="past_name")
+images3$path <- paste(images3$Disque, images3$Dossier,images3$RSDB, images3$date, images3$type, sep="/")
+image4 <- merge(image4, images3[,c(13,14)], by="past_name")
 
 image4$ancien_fichier <- paste(image4$path, image4$past_name, sep="/")
 image4$nouveau_fichier <- paste(image4$path, image4$new_name, sep="/")
@@ -88,7 +88,7 @@ for(i in 1:nrow(image4)){
 images3$Espece <- as.factor(images3$Espece)
 t <- as.data.frame(levels(images3$Espece))
 names(t) <- "levels"
-t$path <- paste("D:/RSDB_images_triees", t$levels, sep="/")
+t$path <- paste("H:/traitement_Tadarida_deep_avec_freq20/RSDB_images_triees", t$levels, sep="/")
 for(i in 1:nrow(t)){
   dir.create(path=t$path[i])
 }
