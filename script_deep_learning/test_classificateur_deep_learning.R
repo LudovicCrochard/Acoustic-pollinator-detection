@@ -36,29 +36,7 @@ df$database <- fct_recode(df$Classif,
                           "homsap_3000"       = "9",
                           "homsap_3000"       = "10",
                           "homsap_3000"      = "11",)
-                                   "4"       = "1",
-                                   "8"       = "2",
-                                   "16"      = "3",
-                                   "32"      = "4",
-                                   "4"       = "5",
-                                   "8"       = "6",
-                                   "16"      = "7",
-                                   "32"      = "8",
-                                   "4"       = "9",
-                                   "8"       = "10",
-                                   "16"      = "11",)
-df$database <- fct_recode(df$Classif,
-                           "sans_homsap"       = "1",
-                           "sans_homsap"       = "2",
-                           "sans_homsap"      = "3",
-                           "sans_homsap"      = "4",
-                           "homsap_1000"       = "5",
-                           "homsap_1000"       = "6",
-                           "homsap_1000"      = "7",
-                           "homsap_1000"      = "8",
-                           "homsap_3000"       = "9",
-                           "homsap_3000"       = "10",
-                           "homsap_3000"      = "11",)
+
 df$roc_name <- paste("Classif", df$Classif, df$nbepochs, df$batchsize, ".jpg", sep = "_")
 df$auc_avant <- NA
 df$auc_apres <- NA
