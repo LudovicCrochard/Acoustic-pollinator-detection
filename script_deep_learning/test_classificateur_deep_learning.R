@@ -13,6 +13,7 @@ df1 <- df1[,c(2,3)]
 names(df1) <- c("Classif", "nbepochs")
 df <- cbind(df, df1)
 df$batchsize <- fct_recode(df$Classif,
+<<<<<<< HEAD
                            "4"       = "1",
                            "8"       = "2",
                            "16"      = "3",
@@ -36,6 +37,31 @@ df$database <- fct_recode(df$Classif,
                           "homsap_3000"       = "9",
                           "homsap_3000"       = "10",
                           "homsap_3000"      = "11",)
+=======
+                                   "4"       = "1",
+                                   "8"       = "2",
+                                   "16"      = "3",
+                                   "32"      = "4",
+                                   "4"       = "5",
+                                   "8"       = "6",
+                                   "16"      = "7",
+                                   "32"      = "8",
+                                   "4"       = "9",
+                                   "8"       = "10",
+                                   "16"      = "11",)
+df$database <- fct_recode(df$Classif,
+                           "sans_homsap"       = "1",
+                           "sans_homsap"       = "2",
+                           "sans_homsap"      = "3",
+                           "sans_homsap"      = "4",
+                           "homsap_1000"       = "5",
+                           "homsap_1000"       = "6",
+                           "homsap_1000"      = "7",
+                           "homsap_1000"      = "8",
+                           "homsap_3000"       = "9",
+                           "homsap_3000"       = "10",
+                           "homsap_3000"      = "11",)
+>>>>>>> df27c45efab496a3476b6f6cb9b5cc3bbc92d37b
 df$roc_name <- paste("Classif", df$Classif, df$nbepochs, df$batchsize, ".jpg", sep = "_")
 df$auc_avant <- NA
 df$auc_apres <- NA
@@ -112,7 +138,11 @@ for(i in 1:nrow(df)){
     text(0.55,0.5,paste("AUC", df$auc_apres[i], sep=" = "))
   # 3. Close the file
   # dev.off()
+<<<<<<< HEAD
   #Recuperer toutes les valeurs de tous les points de la courbe
+=======
+#Recuperer toutes les valeurs de tous les points de la courbe
+>>>>>>> df27c45efab496a3476b6f6cb9b5cc3bbc92d37b
   cutoffs <- as.data.frame(pred@cutoffs[[1]])
   tp <- as.data.frame(pred@tp[[1]])
   fp <- as.data.frame(pred@fp[[1]])
@@ -121,11 +151,19 @@ for(i in 1:nrow(df)){
   df2 <- cbind(cutoffs, tp, fp, tn, fn)
   names(df2) <- c("seuil", "tp", "fp", "tn", "fn")
   for(j in 1 : nrow(df2)){
+<<<<<<< HEAD
     df2$sensibility[j] <- df2$tp[j]/(df2$tp[j]+df2$fn[j])
     df2$specificity[j] <- df2$tn[j]/(df2$tn[j]+df2$fp[j])
     df2$precision[j] <- df2$tp[j]/(df2$tp[j]+df2$fp[j])
     df2$neg_pred_val[j] <- df2$tn[j]/(df2$tn[j]+df2$fn[j])
     df2$accuracy[j] <- (df2$tp[j]+df2$tn[j])/(df2$tp[j]+df2$fn[j]+df2$tn[j]+df2$fp[j])
+=======
+  df2$sensibility[j] <- df2$tp[j]/(df2$tp[j]+df2$fn[j])
+  df2$specificity[j] <- df2$tn[j]/(df2$tn[j]+df2$fp[j])
+  df2$precision[j] <- df2$tp[j]/(df2$tp[j]+df2$fp[j])
+  df2$neg_pred_val[j] <- df2$tn[j]/(df2$tn[j]+df2$fn[j])
+  df2$accuracy[j] <- (df2$tp[j]+df2$tn[j])/(df2$tp[j]+df2$fn[j]+df2$tn[j]+df2$fp[j])
+>>>>>>> df27c45efab496a3476b6f6cb9b5cc3bbc92d37b
   }
   classif <- rep(df$Classif[i], nrow(df2))
   nbepochs <- rep(df$nbepochs[i], nrow(df2))
