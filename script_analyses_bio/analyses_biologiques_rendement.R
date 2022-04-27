@@ -1,7 +1,7 @@
 library(data.table)
 library(tidyverse)
 library(ggplot2)
-
+library(lme4)
 df <- fread("~/These/acousticpollinatordetection/data/Ludo_rdt_130122.csv")
 
 #### Test pour voir si la pollinisation a un impact sur le rendement
@@ -23,7 +23,7 @@ df_pol <- filter(df_pol, Diametre!="NA")
 df_pol <- filter(df_pol, Nb_graines!="NA")
 cor.test(df_pol$Nb_graines, df_pol$Diametre)
 
-ggplot(df_pol, aes(x = Diametre, y = Nb_graines, color=Ligne))+
+ggplot(df_pol, aes(x = Diametre, y = Nb_graines))+
   geom_point(stat = "identity") + 
   geom_smooth(method=lm, se=FALSE, fullrange=TRUE)+
   xlim(c(0,320))+
@@ -33,12 +33,23 @@ hist(df_pol$Nb_graines)
 hist(df_pol$Poids_graines)
 hist(df_pol$PMG)
 
+#Y a-t-il un effet de la pollinisation sur le rendement?
+#Rendement~Diametre_pied+Traitement(NF(non ensache vs PM(ensache)))+ (1|Parcelle)
+#Nb_graines
+library(lmerTest)
+m1 <- lmer(Nb_graines ~ Diametre + Traitement + (1|Parcelle), data = df_pol)
+summary(m1)
+m2 <- glmer(Nb_graines ~ scale(Diametre) + Traitement + (1|Parcelle), data = df_pol, family = "poisson")
+summary(m2)
+anova(m1, m2) #On garde le modele m1 car l'AIC est plus faible
 
-cor(x = df_pol$Ligne, y = df_pol$Nb_graines)
-model <- lmer(Nb_graines ~ Diametre + Traitement + (1|Parcelle), data = df_pol)
-summary(model)
-m1 <- glmer(Nb_graines ~ Diametre + Traitement + (1|Parcelle), data = df_pol, family = "poisson")
-summary(model1)
+
+
+t <- filter(df_pol, Traitement=="NF")
+m1 <- lmer(Nb_graines ~ Diametre + Ligne + (1|Parcelle), data = t)
+summary(m1)
+m2 <- glmer(Nb_graines ~ Diametre + Ligne + (1|Parcelle), data = t, family = "poisson")
+summary(m2)
 
 
 numcols <- grep("^c\\.",names(df_pol))
