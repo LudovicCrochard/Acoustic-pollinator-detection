@@ -36,6 +36,7 @@ for(i in 1:nrow(df376)){
 }
 
 df376_pol <- filter(df376, pol_class>=5)
+t <- unique(df376_pol$Group.1) #controle que bien une seule ligne par enregistrement
 
 df376_pol <- separate(data = df376_pol, col = Group.1, sep = "_", into = c("Field", "Parcelle", "Pied", "Date", "Heure", "ext"))
 

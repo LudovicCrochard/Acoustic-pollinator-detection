@@ -8,6 +8,7 @@ df <- as.data.frame(list.files("H:/traitement_Tadarida_deep_avec_freq20/TadariDe
 names(df) <- c("name")
 df <- filter(df, grepl(x = df$name, pattern = "prediction"))
 df <- filter(df, grepl(x = df$name, pattern = ".csv"))
+df <- filter(df, grepl(x = df$name, pattern = "basetest"))
 df1 <- as.data.frame(str_split(df$name, "_", simplify = TRUE))
 df1 <- df1[,c(2,3)]
 names(df1) <- c("Classif", "nbepochs")
@@ -231,47 +232,47 @@ perf <- performance(pred, "err")
 
 
 
-
+df$nbepochs1 <- as.numeric(df$nbepochs)
 #Graph
 df$nbepochs <- fct_relevel(df$nbepochs, c("25", "37", "50","62","75","87", "100","112", "125", "137","150","162","175", "187","200" ))
 
 df$Classif <- as.character(df$Classif)
-ggplot(df, aes(x = nbepochs, y = auc_apres, group=Classif, color=database))+
+ggplot(df, aes(x = nbepochs1, y = auc_apres, group=Classif, color=database))+
   geom_point(size=2)+
   geom_line(size=1)+ ylim(0.85,0.96)+xlab("Nombre d'itération") + ylab("AUC")+
   theme_classic() + scale_color_brewer(palette="Paired")
 
 df$database <- as.factor(df$database)
 df1 <- filter(df, database=="sans_homsap")
-ggplot(df1, aes(x = nbepochs, y = auc_apres, group=Classif, color=Classif))+
+ggplot(df1, aes(x = nbepochs1, y = auc_apres, group=Classif, color=Classif))+
   geom_point(size=2)+
   geom_line(size=1)+ ylim(0.85,0.96)+xlab("Nombre d'itération") + ylab("AUC")+
   theme_classic() + scale_color_brewer(palette="Paired")
 
 df2 <- filter(df, database=="homsap_1000")
-ggplot(df2, aes(x = nbepochs, y = auc_apres,group=Classif, color=Classif))+
+ggplot(df2, aes(x = nbepochs1, y = auc_apres,group=Classif, color=Classif))+
   geom_point(size=2)+
   geom_line(size=1)+ ylim(0.85,0.96)+xlab("Nombre d'itération") + ylab("AUC")+
   theme_classic() + scale_color_brewer(palette="Paired")
 df3 <- filter(df, database=="homsap_3000")
-ggplot(df3, aes(x = nbepochs, y = auc_apres,group=Classif, color=Classif))+
+ggplot(df3, aes(x = nbepochs1, y = auc_apres,group=Classif, color=Classif))+
   geom_point(size=2)+
   geom_line(size=1)+ ylim(0.85,0.96)+xlab("Nombre d'itération") + ylab("AUC")+
   theme_classic() + scale_color_brewer(palette="Paired")
 
 df$batchsize <- as.character(df$batchsize)
 df4 <- filter(df, batchsize=="4")
-ggplot(df4, aes(x = nbepochs, y = auc_apres, group=Classif, color=Classif))+
+ggplot(df4, aes(x = nbepochs1, y = auc_apres, group=Classif, color=Classif))+
   geom_point(size=2)+
   geom_line(size=1)+ ylim(0.85,0.96)+xlab("Nombre d'itération") + ylab("AUC")+
   theme_classic() + scale_color_brewer(palette="Paired")
 df5 <- filter(df, batchsize=="8")
-ggplot(df5, aes(x = nbepochs, y = auc_apres, group=Classif, color=Classif))+
+ggplot(df5, aes(x = nbepochs1, y = auc_apres, group=Classif, color=Classif))+
   geom_point(size=2)+
   geom_line(size=1)+ ylim(0.85,0.96)+xlab("Nombre d'itération") + ylab("AUC")+
   theme_classic() + scale_color_brewer(palette="Paired")
 df6 <- filter(df, batchsize=="16")
-ggplot(df6, aes(x = nbepochs, y = auc_apres, group=Classif, color=Classif))+
+ggplot(df6, aes(x = nbepochs1, y = auc_apres, group=Classif, color=Classif))+
   geom_point(size=2)+
   geom_line(size=1)+ ylim(0.85,0.96)+xlab("Nombre d'itération") + ylab("AUC")+
   theme_classic() + scale_color_brewer(palette="Paired")
