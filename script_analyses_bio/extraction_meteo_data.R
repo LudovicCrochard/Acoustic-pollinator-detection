@@ -783,4 +783,4 @@ meteo_data <- meteo_data[,c(1,2,5,3,4,6,7)]
 
 
 
-
+# fwrite(x = meteo_data, file = "data/meteo_data.csv")
