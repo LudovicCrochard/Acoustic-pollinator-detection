@@ -4,7 +4,7 @@ library(stringr)
 library(ggplot2)
 
 
-df376 <- fread("D:/travail_manip_tournesol/parcelle_test_376/parcelle_test_376_IdTot.csv")
+df376 <- fread("data/parcelle_test/parcelle_test_376_IdTot.csv")
 df376$score_pol <- df376$Apismel+df376$Bomsp+df376$insect
 
 df376 <- df376 %>% 
@@ -69,7 +69,7 @@ df376_pol$num_Heure <- as.factor(df376_pol$num_Heure)
 
 
 #data pied
-df_pied <- fread("D:/travail_manip_tournesol/data_tournesol_2020/data_focales.csv")
+df_pied <- fread("data/data_focales.csv")
 df_pied$Pied <- paste(df_pied$Ligne, df_pied$Pied, sep="")
 df_pied_376 <- filter(df_pied, Parcelle==376 & Pied=="l3t1")
 df_pied_376 <- unique(df_pied_376[,c(1:11)])
@@ -83,7 +83,7 @@ df376_pol <- left_join(df376_pol, df_pied_376[,c(1,5:10,12)], by=c("Parcelle", "
 
 
 #data parcelle
-df_parcelle <- fread("D:/travail_manip_tournesol/data_tournesol_2020/data_penologie_new.csv")
+df_parcelle <- fread("data/data_penologie_new.csv")
 df_parcelle$Date <- as.Date(df_parcelle$Date, format="%Y-%m-%d")
 df_parcelle$semaine <- isoweek(df_parcelle$Date)
 df_parcelle$Parcelle <- as.character(df_parcelle$Parcelle)
@@ -91,7 +91,7 @@ df_parcelle_376 <- filter(df_parcelle, Parcelle=="376")
 df376_pol <- left_join(df376_pol, df_parcelle_376[,c(1,4:6,9)], by=c("Parcelle", "semaine"))
 
 #data rendement
-df_rendement <- fread("D:/travail_manip_tournesol/data_tournesol_2020/rendement_pied.csv")
+df_rendement <- fread("data/rendement_pied.csv")
 df_rendement$Parcelle <- as.character(df_rendement$Parcelle)
 
 df_rendement_sachet <- filter(df_rendement, ID_Zone=="SACHET")
@@ -150,8 +150,8 @@ ggplot(data=df_floraison_parcelle, aes(x = Pourcentage_floraison, y=Nb_buzz))+
 
 #Nombre de buzz moyen par heure sur la saison
 ##Connaitre nombre de fois oùil y a eu des enreigstrements pendant la journée
-file3 <- fread("D:/travail_manip_tournesol/files_listing_part3.csv")
-file4 <- fread("D:/travail_manip_tournesol/files_listing_part4.csv")
+file3 <- fread("data/parcelle_test/files_listing_part3.csv")
+file4 <- fread("data/parcelle_test/files_listing_part4.csv")
 
 file <- rbind(file3, file4)
 file_376 <- filter(file, parcelle=="376")
@@ -222,9 +222,9 @@ ggplot(data = test1, aes(x=num_Heure, y=Nb_buzz))+
 
 
 
-df376 <- fread("data/predictions_6_200_1_parcel376.csv")
-df376_2 <- fread("data/predictions_6_200_1_parcel376part2.csv")
-df376_3 <- fread("data/predictions_6_200_1_parcel376part3.csv")
+df376 <- fread("data/parcelle_test/predictions_6_200_1_parcel376.csv")
+df376_2 <- fread("data/parcelle_test/predictions_6_200_1_parcel376part2.csv")
+df376_3 <- fread("data/parcelle_test/predictions_6_200_1_parcel376part3.csv")
 df376 <- rbind(df376, df376_2, df376_3)
 df376$score_pol <- df376$Apismel+df376$Bomsp+df376$insect
 colnames(df376)[4] <- "fichier"
@@ -268,7 +268,7 @@ df376_pol$num_Heure <- as.factor(df376_pol$num_Heure)
 
 
 #data pied
-df_pied <- fread("D:/travail_manip_tournesol/data_tournesol_2020/data_focales.csv")
+df_pied <- fread("data/data_focales.csv")
 df_pied$Pied <- paste(df_pied$Ligne, df_pied$Pied, sep="")
 df_pied_376 <- filter(df_pied, Parcelle==376 & Pied=="l3t1")
 df_pied_376 <- unique(df_pied_376[,c(1:11)])
@@ -282,7 +282,7 @@ df376_pol <- left_join(df376_pol, df_pied_376[,c(1,5:10,12)], by=c("Parcelle", "
 
 
 #data parcelle
-df_parcelle <- fread("D:/travail_manip_tournesol/data_tournesol_2020/data_penologie_new.csv")
+df_parcelle <- fread("data/data_penologie_new.csv")
 df_parcelle$Date <- as.Date(df_parcelle$Date, format="%Y-%m-%d")
 df_parcelle$semaine <- isoweek(df_parcelle$Date)
 df_parcelle$Parcelle <- as.character(df_parcelle$Parcelle)
@@ -290,7 +290,7 @@ df_parcelle_376 <- filter(df_parcelle, Parcelle=="376")
 df376_pol <- left_join(df376_pol, df_parcelle_376[,c(1,4:6,9)], by=c("Parcelle", "semaine"))
 
 #data rendement
-df_rendement <- fread("D:/travail_manip_tournesol/data_tournesol_2020/rendement_pied.csv")
+df_rendement <- fread("data/rendement_pied.csv")
 df_rendement$Parcelle <- as.character(df_rendement$Parcelle)
 
 df_rendement_sachet <- filter(df_rendement, ID_Zone=="SACHET")
@@ -349,8 +349,8 @@ ggplot(data=df_floraison_parcelle, aes(x = Pourcentage_floraison, y=Nb_buzz))+
 
 #Nombre de buzz moyen par heure sur la saison
 ##Connaitre nombre de fois oùil y a eu des enreigstrements pendant la journée
-file3 <- fread("D:/travail_manip_tournesol/files_listing_part3.csv")
-file4 <- fread("D:/travail_manip_tournesol/files_listing_part4.csv")
+file3 <- fread("data/parcelle_test/files_listing_part3.csv")
+file4 <- fread("data/parcelle_test/files_listing_part4.csv")
 
 file <- rbind(file3, file4)
 file_376 <- filter(file, parcelle=="376")
@@ -414,4 +414,18 @@ t376 <- unique(meteo_376[,c(1,2,4,5)])
 ggplot(data=t376, aes(x=day, y=temperature))+
   geom_point()+geom_line()
 ggplot(data=t376, aes(x=day, y=precipitation))+
+  geom_point()+geom_line()
+#graph du vent et couverture nuageuse a midi
+v376 <- filter(meteo_376, hour==12)
+ggplot(data=v376, aes(x=day, y=wind_speed))+
+  geom_point()+geom_line()
+ggplot(data=v376, aes(x=day, y=cloudcover))+
+  geom_point()+geom_line()
+
+
+m376 <- aggregate(wind_speed~id+day, data=meteo_376, FUN="mean")
+c376 <- aggregate(cloudcover~id+day, data=meteo_376, FUN="mean")
+ggplot(data=m376, aes(x=day, y=wind_speed))+
+  geom_point()+geom_line()
+ggplot(data=c376, aes(x=day, y=cloudcover))+
   geom_point()+geom_line()
