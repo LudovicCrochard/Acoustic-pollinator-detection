@@ -37,11 +37,39 @@ hist(df_pol$PMG)
 #Rendement~Diametre_pied+Traitement(NF(non ensache vs PM(ensache)))+ (1|Parcelle)
 #Nb_graines
 library(lmerTest)
-m1 <- lmer(Nb_graines ~ Diametre + Traitement + (1|Parcelle), data = df_pol)
+t <- aggregate(Nb_graines~Traitement, data=df_pol, FUN="mean")
+ggplot(data=df_pol, aes(x=Traitement, y=Nb_graines))+
+  geom_boxplot()+
+  geom_jitter()+
+  geom_point(data=t,aes(x = Traitement, y=Nb_graines), col="red", size=3)
+m1 <- lmer(Nb_graines ~ Diametre  + Traitement  + Diametre:Traitement+ (1|Parcelle), data = df_pol)
 summary(m1)
+anova(m1)
 m2 <- glmer(Nb_graines ~ scale(Diametre) + Traitement + (1|Parcelle), data = df_pol, family = "poisson")
 summary(m2)
 anova(m1, m2) #On garde le modele m1 car l'AIC est plus faible
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
